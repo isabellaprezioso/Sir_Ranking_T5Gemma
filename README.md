@@ -1,10 +1,19 @@
 # Sir_Ranking_T5Gemma – Reproducible pipeline (Baby dataset)
 
-Questo repository contiene una pipeline completa per **review-based recommendation** basata su **DeepCoNN**, con supporto a **embeddings T5Gemma precomputati** (modalità *NO CNN*).
+Questo repository contiene una pipeline completa per **review-based recommendation** basata su **DeepCoNN**, con supporto a **embeddings T5Gemma precomputati**.
 
 Il README descrive **tutti i passaggi per riprodurre gli esperimenti sul dataset Baby**, dalla preparazione dei dati fino al training e al test.
 
 ---
+
+## 0. Setup cartelle (log e checkpoint)
+Questi comandi creano le cartelle dove verranno salvati log e modelli:
+```bash
+mkdir -p logs/Baby
+mkdir -p logs/Baby/T5
+mkdir -p checkpoints
+mkdir -p slogs
+```
 
 ## 1. Installazione ambiente
 
@@ -154,6 +163,12 @@ python main_t5PRO.py train \
   --kernel_size 4 \
   --word_dim 300
 ```
+Checkpoint (BPR Classic)
+Durante il training BPR viene salvato automaticamente il miglior modello nella cartella checkpoints/.
+
+Nome file (Classic):
+checkpoints/BPR_model_DeepCoNN_Baby_5_data_BPR_Classic.pth
+
 
 ### Cosa succede
 
@@ -178,6 +193,12 @@ python main_t5PRO.py train \
   --num_epochs 100 \
   --lr 0.002
 ```
+Checkpoint (BPR Precomputed)
+Durante il training BPR in modalità precomputed viene salvato automaticamente il miglior modello nella cartella checkpoints/.
+
+Nome file (Precomputed):
+checkpoints/BPR_model_DeepCoNN_Baby_5_data_BPR_Pre.pth
+
 
 ### Cosa succede
 
@@ -199,14 +220,28 @@ python main_t5PRO.py test \
   --model DeepCoNN \
   --setup BPR \
   --use_precomputed True \
-  --precomputed_mode deepconn
+  --precomputed_mode deepconn \
+  --pth_path ./checkpoints
 ```
 
-Il test utilizza gli stessi embeddings precomputati del training.
+Quale checkpoint carica il test
+Il test carica automaticamente il modello salvato in training, in base alla modalità:
+
+- Classic: checkpoints/BPR_model_DeepCoNN_Baby_5_data_BPR_Classic.pth
+- Precomputed: checkpoints/BPR_model_DeepCoNN_Baby_5_data_BPR_Pre.pth
+
+Se il file non esiste, significa che non hai ancora completato un training oppure che hai cambiato pth_path.
+
 
 ---
 
 ## 9. Note sulle modifiche al codice
+
+Debug rapido (controllo modalità dai log)
+Nei log di esecuzione puoi verificare subito la modalità:
+
+- Classic: log mostra caricamento Word2Vec e pipeline classica (CNN)
+- Precomputed: log mostra "Modalità PRECOMPUTED" e "disabilito T5" + caricamento user_embeddings.npy/item_embeddings.npy
 
 Per supportare la modalità precomputed sono state introdotte modifiche in:
 
