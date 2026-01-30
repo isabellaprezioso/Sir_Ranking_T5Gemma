@@ -1,0 +1,19 @@
+__pycache__/
+*.pyc
+
+# log / checkpoint
+checkpoints/
+logs/
+slogs/
+*.log
+*.pth
+
+# virtual env / cache
+venv/
+.cache/
+t5gemma_offline/
+
+# artefatti pesanti (se mai compaiono)
+*.npy
+*.npz
+*.zip
