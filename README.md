@@ -196,7 +196,7 @@ Script:
 ```bash
 python main_t5PRO.py test \
   --dataset Baby_5_data \
-  --model DeepCoNNNOCNN \
+  --model DeepCoNN \
   --setup BPR \
   --use_precomputed True \
   --precomputed_mode deepconn
